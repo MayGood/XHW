@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">某猫的小黑屋</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_send_message">SendMessageActivity</string>
+    <string name="title_activity_receive_message">ReceiveMessageActivity</string>
+    <string name="title_activity_weibo_show">WeiboShow</string>
+
+    <item name="tag_mid" type="id"/>
+    <item name="tag_layout" type="id"/>
+    <item name="tag_retweeted" type="id"/>
+    <item name="tag_ori" type="id"/>
+
+    <string name="title_activity_saloon">Saloon</string>
+    <string name="title_section1">大客厅</string>
+    <string name="title_section2">空屋子</string>
+    <string name="title_section3">空屋子</string>
+    <string name="title_activity_test">Test</string>
+    <string name="title_activity_fullscreen_image">FullscreenImageActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_timer_setting">TimerSettingActivity</string>
+
+</resources>

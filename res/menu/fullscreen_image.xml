@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/action_thumbnail" android:title="缩略图片"></item>
+    <item android:id="@+id/action_bmiddle" android:title="中等尺寸图片"></item>
+    <item android:id="@+id/action_original" android:title="原始图片"></item>
+    
+
+</menu>

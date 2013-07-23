@@ -1,0 +1,7 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    
+    
+    <item android:id="@+id/xxh" android:title="xxh"></item><item android:id="@+id/xx" android:title="x"></item><item android:id="@id/action_settings" android:orderInCategory="100" android:showAsAction="never" android:title="抽个风~" />
+
+</menu>

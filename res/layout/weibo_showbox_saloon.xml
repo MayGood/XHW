@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/name_show_saloon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:text="路人-甲"
+        android:textColor="@color/blue"
+        android:textSize="11sp" />
+    
+    <TextView
+        android:id="@+id/counts_show_saloon"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="false"
+        android:gravity="right"
+        android:text="回复(10)   转发(7)"
+        android:textSize="9sp" />
+
+    <LinearLayout
+        android:id="@+id/content_box_saloon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/name_show_saloon"
+        android:orientation="vertical" >
+
+        <TextView
+        android:id="@+id/content_show_saloon"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="false"
+        android:text="大约八点二十发" />
+
+        <com.maygood.xhw.app.DialogBox
+            android:id="@+id/retweeted_show_saloon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="2dp"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp"
+            android:paddingTop="7dp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+    
+    <TextView
+        android:id="@+id/time_show_saloon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_below="@id/content_box_saloon"
+        android:text="8:20"
+        android:textSize="9sp" />
+
+</RelativeLayout>

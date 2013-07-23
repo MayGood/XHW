@@ -1,0 +1,134 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SendMessageActivity" >
+
+    <RelativeLayout
+        android:id="@+id/content_box_send"
+        android:layout_width="fill_parent"
+        android:layout_height="160dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="0dp"
+        android:orientation="vertical" >
+
+        <EditText
+            android:id="@+id/textInput"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="top|left"
+            android:maxLength="140" >
+
+            <requestFocus android:layout_width="match_parent" />
+
+        </EditText>
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textInput"
+            android:layout_marginTop="10dp"
+            android:maxHeight="100dp"
+            android:scaleType="fitStart" />
+
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:id="@+id/command_box_send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/content_box_send" >
+
+        <Button
+            android:id="@+id/command_pic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="图片" />
+        
+        <Button
+            android:id="@+id/command_bq"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/command_pic"
+            android:text="bq" />
+	
+	</RelativeLayout>
+
+    <TabHost
+        android:id="@+id/tabhost"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/command_box_send">
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                
+                <GridView
+		            android:id="@+id/grid_bq0"
+		            android:layout_width="300dp"
+		            android:layout_height="wrap_content"
+		            android:layout_marginTop="14dp"
+		            android:horizontalSpacing="3dp"
+		            android:numColumns="12"
+		            android:stretchMode="columnWidth"
+		            android:verticalSpacing="3dp" />
+		      	<GridView
+		            android:id="@+id/grid_bq1"
+		            android:layout_width="300dp"
+		            android:layout_height="wrap_content"
+		            android:layout_marginTop="14dp"
+		            android:horizontalSpacing="3dp"
+		            android:numColumns="12"
+		            android:stretchMode="columnWidth"
+		            android:verticalSpacing="3dp" />
+		     	<GridView
+		            android:id="@+id/grid_bq2"
+		            android:layout_width="300dp"
+		            android:layout_height="wrap_content"
+		            android:layout_marginTop="14dp"
+		            android:horizontalSpacing="3dp"
+		            android:numColumns="12"
+		            android:stretchMode="columnWidth"
+		            android:verticalSpacing="3dp" />
+		      	<GridView
+		            android:id="@+id/grid_bq3"
+		            android:layout_width="300dp"
+		            android:layout_height="wrap_content"
+		            android:layout_marginTop="14dp"
+		            android:horizontalSpacing="3dp"
+		            android:numColumns="12"
+		            android:stretchMode="columnWidth"
+		            android:verticalSpacing="3dp" />
+		   		<GridView
+		            android:id="@+id/grid_bq4"
+		            android:layout_width="300dp"
+		            android:layout_height="wrap_content"
+		            android:layout_marginTop="14dp"
+		            android:horizontalSpacing="3dp"
+		            android:numColumns="12"
+		            android:stretchMode="columnWidth"
+		            android:verticalSpacing="3dp" />
+
+            </FrameLayout>
+            
+        </LinearLayout>
+        
+    </TabHost>
+
+</RelativeLayout>
