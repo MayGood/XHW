@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.maygood.xhw.R;
+import com.maygood.xhw.app.BqBox;
 import com.maygood.xhw.data.ConstantS;
 import com.maygood.xhw.data.DataBaseHandler;
 import com.maygood.xhw.net.HttpsUtils;
@@ -22,6 +23,8 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,10 +52,11 @@ public class SendMessageActivity extends Activity {
 	private EditText textInput;
 	private Button picButton;
 	private Button bqButton;
+	int[] location;	//location of bqButton
 	
 	private TabHost tabHost;
-	private Spinner bqGroup;
 	private GridView bqGrid;
+	private GridView bqGridUndef;
 	private DataBaseHandler dbHandler;
 
 	@Override
@@ -77,7 +81,9 @@ public class SendMessageActivity extends Activity {
 		
 		dbHandler = new DataBaseHandler(this);
 		LayoutInflater inflater = LayoutInflater.from(SendMessageActivity.this);
-		View view = inflater.inflate(R.layout.popup_bq, null);
+		//View view = inflater.inflate(R.layout.popup_bq, null);
+		
+		/*
 		bqGroup = (Spinner) view.findViewById(R.id.bq_groupname);
 		String[] groupname = {"罗小黑"};
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, groupname);
@@ -97,9 +103,9 @@ public class SendMessageActivity extends Activity {
 				// TODO Auto-generated method stub
 				
 			}
-		});
-		bqGrid = (GridView) view.findViewById(R.id.bq_grid);
-		initBqGrid(bqGrid, "罗小黑");
+		});*/
+		//bqGrid = (GridView) view.findViewById(R.id.bq_grid);
+		
 		
 		tabHost = (TabHost) findViewById(R.id.tabhost);
 		tabHost.setup();
@@ -111,25 +117,60 @@ public class SendMessageActivity extends Activity {
 		initBqGrid(bqGrid, "阿狸");
 		bqGrid = (GridView) findViewById(R.id.grid_bq3);
 		initBqGrid(bqGrid, "大熊");
-		bqGrid = (GridView) findViewById(R.id.grid_bq4);
-		initBqGrid(bqGrid, "影子");
 		tabHost.addTab(tabHost.newTabSpec("lxhx").setContent(R.id.grid_bq0).setIndicator("罗小黑"));
 		tabHost.addTab(tabHost.newTabSpec("xq").setContent(R.id.grid_bq1).setIndicator("心情"));
 		tabHost.addTab(tabHost.newTabSpec("ali").setContent(R.id.grid_bq2).setIndicator("阿狸"));
 		tabHost.addTab(tabHost.newTabSpec("dx").setContent(R.id.grid_bq3).setIndicator("大熊"));
-		tabHost.addTab(tabHost.newTabSpec("yz").setContent(R.id.grid_bq4).setIndicator("影子"));
+		bqGridUndef = (GridView) findViewById(R.id.grid_bq4);
+		final Spinner spinner = (Spinner) findViewById(R.id.spinner_undef);
+		ArrayList<String> groupnames = dbHandler.getBqGroup();
 		
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, groupnames);
+		spinner.setAdapter(adapter);
+		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				initBqGrid(bqGridUndef, spinner.getSelectedItem().toString());
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		spinner.setSelection(34);
+		tabHost.addTab(tabHost.newTabSpec("undef").setContent(R.id.tab_undef).setIndicator("自定义"));
+		
+		bqButton = (Button)findViewById(R.id.command_bq);
+		location = new int[2];
+		bqButton.getLocationOnScreen(location);
+		
+		BqBox view = new BqBox(this, location[0]+(bqButton.getWidth()/2)-10);
+		bqGrid = view.gv;
+		initBqGrid(bqGrid, "罗小黑");
 		final PopupWindow pop = new PopupWindow(view, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, false);
 		pop.setBackgroundDrawable(new BitmapDrawable());
 		pop.setOutsideTouchable(true);
 		pop.setFocusable(true);
 		
-		bqButton = (Button)findViewById(R.id.command_bq);
 		bqButton.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				if(pop.isShowing()) {
+					pop.dismiss();
+				}
+				else {
+					//pop.getContentView().measure(0,0);
+					v.getLocationOnScreen(location);
+					pop.showAtLocation(v, Gravity.NO_GRAVITY, 10, location[1]-1-pop.getContentView().getHeight());
+					//pop.update();
+				}
 			}
 		});
 		

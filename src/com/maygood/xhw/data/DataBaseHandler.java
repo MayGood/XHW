@@ -1,5 +1,6 @@
 package com.maygood.xhw.data;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -290,6 +291,23 @@ public class DataBaseHandler {
 		}
 		
 		return bq_map;
+	}
+	
+	public ArrayList<String> getBqGroup() {
+		ArrayList<String> groupnames = new ArrayList<String>();
+		
+		SQLiteDatabase db = this.getReadableDatabase();
+		String sql = "select distinct groupname from bqlib ";
+		Cursor c = db.rawQuery(sql, null);
+		c.moveToFirst();
+		while(!c.isAfterLast()) {
+			int index = c.getColumnIndex("groupname");
+			String groupname = c.getString(index);
+			groupnames.add(groupname);
+			c.moveToNext();
+		}
+		
+		return groupnames;
 	}
 	
 	public int getRidByCode(String code) {
