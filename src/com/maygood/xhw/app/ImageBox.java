@@ -30,7 +30,7 @@ public class ImageBox extends ImageView {
 	public void setBitmap(Bitmap bm, MODE m) {
 		mode = m;
 		if(mode == MODE.TRIM) {
-			setImageBitmap(Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), 4096));
+			setImageBitmap(Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), 2048));
 		}
 		else {
 			setImageBitmap(bm);
@@ -51,7 +51,7 @@ public class ImageBox extends ImageView {
 				left = bitmap[i].getX();
 				top = bitmap[i].getY();
 				canvas.drawBitmap(bitmap[i].getBitmap(), left, top, null);
-				bitmap[i].getBitmap().recycle();
+				//bitmap[i].getBitmap().recycle();
 			}
 		}
 		else if(mode == MODE.TRIM) {
@@ -59,7 +59,7 @@ public class ImageBox extends ImageView {
 			int left = bitmap[0].getX();
 			int	top = bitmap[0].getY();
 			canvas.drawBitmap(bitmap[0].getBitmap(), left, top, null);
-			bitmap[0].getBitmap().recycle();
+			//bitmap[0].getBitmap().recycle();
 		}
 		else if(mode == MODE.SCALE) {
 			//Log.d("imageview", "onDraw:TRIM");
@@ -68,7 +68,7 @@ public class ImageBox extends ImageView {
 			Matrix matrix = new Matrix();
 			matrix.postScale((float)0.5, (float)0.5);
 			canvas.drawBitmap(bitmap[0].getBitmap(), matrix, null);
-			bitmap[0].getBitmap().recycle();
+			//bitmap[0].getBitmap().recycle();
 		}
 		else {
 			//Log.d("imageview", "onDraw:NORMAL");

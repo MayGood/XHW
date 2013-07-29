@@ -93,9 +93,9 @@ public class ReceiveMessageActivity extends Activity {
 					}
 				}
 				else {
-					String mid = ((HashMap<String, Object>)parent.getItemAtPosition(pos)).get("mid").toString();
+					String ori = view.getTag(R.id.tag_ori).toString();
 					Intent i_weibo = new Intent(ReceiveMessageActivity.this, WeiboShow.class);
-					i_weibo.putExtra("mid", mid);
+					i_weibo.putExtra("ori", ori);
 					startActivity(i_weibo);
 				}
 			}
@@ -436,6 +436,7 @@ public class ReceiveMessageActivity extends Activity {
 				listItemView.counts.setText("ÆÀÂÛ("+ori_json_obj.getString("comments_count")+")    ×ª·¢("
 						+ori_json_obj.getString("reposts_count")+")");
 				
+				convertView.setTag(R.id.tag_ori, listItem.get(position).get(from[0]).toString());
 				convertView.setTag(R.id.tag_mid, listItem.get(position).get(from[1]).toString());
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

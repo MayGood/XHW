@@ -35,7 +35,16 @@ public interface ConstantS {
 	public static final String XXH_id = "2905059831";
 	
 	//熊的单间哦
-	public static final String X_APP_KEY="882200401";
-	public static final String X_APP_SECRET= "fc05bed135da30d78b220253da364c2c";
+	public static final String X_APP_KEY="897253109";
+	public static final String X_APP_SECRET= "ea2c152f7b86423ae145a655d2d40d01";
+	
+	//秘密会客厅
+	public static final String S_APP_KEY="3943833159";
+	public static final String S_APP_SECRET= "5d99a589ca7e771c810578efa23c99cf";
+	
+	//Token info
+	public static final String XHW_token = "";
+	public static final String XDJ_token = "";
+	public static final String SH_token = "2.00dUx8sBPKvtSE18b8ec859dLTaOCC";
 	   
 }

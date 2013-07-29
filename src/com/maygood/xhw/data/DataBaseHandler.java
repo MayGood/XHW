@@ -112,6 +112,20 @@ public class DataBaseHandler {
 		}
 	}
 	
+	public String getCommentBySeq(String seq) {
+		SQLiteDatabase db = this.getReadableDatabase();
+		String sql = "select * from xxhx where seq=\'"+seq+"\'";
+		Cursor c = db.rawQuery(sql, null);
+		c.moveToFirst();
+		String comment = null;
+		if(!c.isAfterLast()) {
+			int index = c.getColumnIndex("comment");
+			comment = c.getString(index);
+			c.moveToNext();
+		}
+		return comment;
+	}
+	
 	//exec delete
 	 public boolean deleteWeibo(String seq) {
 		 SQLiteDatabase db = this.getWritableDatabase();
@@ -333,6 +347,11 @@ public class DataBaseHandler {
 	public void insertSaloonDB(String tableName, String jsonStr) {
 		//DELETE FROM TableName
 		SQLiteDatabase db = this.getWritableDatabase();
+		if(!hasTable(tableName, db)) {
+			//CREATE TABLE saloon(id integer primary key autoincrement, seq text, json text, uid text, comment text);
+			String sql = "create table "+tableName+"(id integer primary key autoincrement, seq text, json text, uid text, comment text)";
+			db.execSQL(sql);
+		}
 		try {
 			JSONObject jsonObj = new JSONObject(jsonStr);
 			int length = jsonObj.getJSONArray("statuses").length();
@@ -357,7 +376,13 @@ public class DataBaseHandler {
 	public void updateSaloonDB(String tableName, String jsonStr) {
 		//DELETE FROM TableName
 		SQLiteDatabase db = this.getWritableDatabase();
-		String sql = "DELETE FROM "+tableName;
+		String sql;
+		if(!hasTable(tableName, db)) {
+			//CREATE TABLE saloon(id integer primary key autoincrement, seq text, json text, uid text, comment text);
+			sql = "create table "+tableName+"(id integer primary key autoincrement, seq text, json text, uid text, comment text)";
+			db.execSQL(sql);
+		}
+		sql = "DELETE FROM "+tableName;
 		db.execSQL(sql);
 		try {
 			JSONObject jsonObj = new JSONObject(jsonStr);
@@ -383,25 +408,41 @@ public class DataBaseHandler {
 	public String querySaloonDB(String tableName) {
 		SQLiteDatabase db = this.getReadableDatabase();
 		String statuses = "{ \"statuses\": [";
-		String sql = "select * from "+tableName+" order by seq desc";
-		Cursor c = db.rawQuery(sql, null);
-		c.moveToFirst();
-		int i = 0;
-		if(!c.isAfterLast()) {
-			int index = c.getColumnIndex("json");
-			statuses += c.getString(index);
-			c.moveToNext();
-			i++;
-		}
-		while(!c.isAfterLast()) {
-			int index = c.getColumnIndex("json");
-			statuses += ","+c.getString(index);
-			c.moveToNext();
-			i++;
+		if(hasTable(tableName, db)) {
+			String sql = "select * from "+tableName+" order by seq desc";
+			Cursor c = db.rawQuery(sql, null);
+			c.moveToFirst();
+			int i = 0;
+			if(!c.isAfterLast()) {
+				int index = c.getColumnIndex("json");
+				statuses += c.getString(index);
+				c.moveToNext();
+				i++;
+			}
+			while(!c.isAfterLast()) {
+				int index = c.getColumnIndex("json");
+				statuses += ","+c.getString(index);
+				c.moveToNext();
+				i++;
+			}
 		}
 		statuses += "] }";
 		//Log.d("sqlite", statuses);
 		return statuses;
+	}
+	
+	private boolean hasTable(String tablename, SQLiteDatabase db) {
+		//SELECT COUNT(*) as count FROM sqlite_master WHERE type='table' and name= 'saloon'
+		String sql = "SELECT COUNT(*) as count FROM sqlite_master WHERE type=\'table\' and name= \'"+ tablename +"\'";
+		Cursor c = db.rawQuery(sql, null);
+		c.moveToFirst();
+		int i = 0;
+		int index = c.getColumnIndex("count");
+		i = c.getInt(index);
+		if(i == 1) {
+			return true;
+		}
+		return false;
 	}
 	
 	public static void customized(Context context) {

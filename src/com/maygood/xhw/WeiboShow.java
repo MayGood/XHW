@@ -112,10 +112,10 @@ public class WeiboShow extends Activity {
 		dbHandler = new DataBaseHandler(this);
 		
 		Intent i = getIntent();
-		mid = i.getStringExtra("mid");
+		String ori = i.getStringExtra("ori");
 		try {
-			Map weiboMsg = dbHandler.getWeiboBySeq(mid);
-			JSONObject jsonObj = new JSONObject(weiboMsg.get("status").toString());
+			JSONObject jsonObj = new JSONObject(ori);
+			mid = jsonObj.getString("mid");
 			if(jsonObj.has("uid")) {
 				if(jsonObj.getString("uid").equals(ConstantS.XX_id)) {
 					setTitle("某熊");
@@ -135,7 +135,8 @@ public class WeiboShow extends Activity {
 					setTitle("某猫");
 				}
 				else {
-					setTitle("路(luan)人(ru)");
+					String name = jsonObj.getJSONObject("user").getString("name");
+					setTitle("路(luan)人(ru)-"+name);
 				}
 			}
 			
@@ -204,12 +205,9 @@ public class WeiboShow extends Activity {
 			}
 			//weiboContent.setText(temptext);
 			
-			String comments = null;
-			if(weiboMsg.get("comment")!=null) {
-				comments = weiboMsg.get("comment").toString();
-			}
+			String comments = dbHandler.getCommentBySeq(mid);
 			if(comments!=null) {
-				initCommentList(weiboMsg.get("comment").toString());
+				initCommentList(comments);
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -901,7 +899,7 @@ public class WeiboShow extends Activity {
 		protected void onPostExecute(Bitmap result) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(result);
-			if(result.getHeight()>4096) {
+			if(result.getHeight()>2048) {
 				weiboPicture.setBitmap(result, MODE.TRIM);
 			}
 			else {

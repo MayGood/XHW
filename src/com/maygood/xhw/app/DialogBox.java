@@ -103,7 +103,7 @@ public class DialogBox extends TextView {
 			append(Html.fromHtml("<font color=\'#808080\'>"+name.substring(0, length-1)+"</font>"));
 			append(" ");
 			SpannableString sps = new SpannableString(" ");
-			Drawable d = getResources().getDrawable(R.drawable.placeholder);
+			Drawable d = getResources().getDrawable(R.drawable.imageholder);
 			d.setBounds(0, 0, 24, 24);
 			ImageSpan isp = new ImageSpan(d, ImageSpan.ALIGN_BASELINE);
 			sps.setSpan(isp, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -118,7 +118,7 @@ public class DialogBox extends TextView {
 			if(hasPicture) {
 				append(" ");
 				SpannableString sps = new SpannableString(" ");
-				Drawable d = getResources().getDrawable(R.drawable.placeholder);
+				Drawable d = getResources().getDrawable(R.drawable.imageholder);
 				d.setBounds(0, 0, 24, 24);
 				ImageSpan isp = new ImageSpan(d, ImageSpan.ALIGN_BASELINE);
 				sps.setSpan(isp, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

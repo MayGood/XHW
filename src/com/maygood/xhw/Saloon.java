@@ -37,6 +37,7 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.Html.ImageGetter;
 import android.text.style.ClickableSpan;
+import android.text.style.ImageSpan;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -65,6 +66,8 @@ public class Saloon extends FragmentActivity implements
 	 */
 	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 	
+	private ActionBar actionBar;
+	
 	private ListView weiboList;
 	private ArrayList<HashMap<String, Object>> listItem;
 	
@@ -76,7 +79,7 @@ public class Saloon extends FragmentActivity implements
 		setContentView(R.layout.activity_saloon);
 
 		// Set up the action bar to show a dropdown list.
-		final ActionBar actionBar = getActionBar();
+		actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
@@ -107,15 +110,15 @@ public class Saloon extends FragmentActivity implements
 				if(pos == parent.getCount()-1) {
 					String maxId = "0";
 					if(pos>0) {
-						long _id = Long.parseLong((((HashMap<String, Object>)parent.getItemAtPosition(pos-1)).get("mid").toString()));
+						long _id = Long.parseLong(view.getTag(R.id.tag_mid).toString());
 						maxId = Long.toString(_id-1);
 					}
 					getWeiboMessage(maxId);
 				}
 				else {
-					String mid = ((HashMap<String, Object>)parent.getItemAtPosition(pos)).get("mid").toString();
+					String ori = view.getTag(R.id.tag_ori).toString();
 					Intent i_weibo = new Intent(Saloon.this, WeiboShow.class);
-					i_weibo.putExtra("mid", mid);
+					i_weibo.putExtra("ori", ori);
 					startActivity(i_weibo);
 				}
 			}
@@ -174,9 +177,14 @@ public class Saloon extends FragmentActivity implements
 	public boolean onNavigationItemSelected(int position, long id) {
 		// When the given dropdown item is selected, show its contents in the
 		// container view.
+		String jsonStr = null;
 		switch (position) {
 		case 0:
-			String jsonStr = dbHandler.querySaloonDB("saloon");
+			jsonStr = dbHandler.querySaloonDB("saloon");
+			initList(jsonStr);
+			break;
+		case 1:
+			jsonStr = dbHandler.querySaloonDB("saloon_s");
 			initList(jsonStr);
 			break;
 
@@ -218,7 +226,7 @@ public class Saloon extends FragmentActivity implements
 			new AlertDialog.Builder(Saloon.this).setTitle("说点什么吧，爷~").setView(repostView)
 			//.setMultiChoiceItems(new String[] {"评论给当前微博", "评论给原微博"}, null, null)
 			.setPositiveButton("确定", repostListener)
-			.setNegativeButton("取消", null)
+			.setNegativeButton("编辑", null)
 			.show();
 			/*
 			Map<String, String> params = new HashMap<String, String>();
@@ -309,7 +317,12 @@ public class Saloon extends FragmentActivity implements
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("url", "https://api.weibo.com/2/statuses/friends_timeline.json");
 		params.put("source", ConstantS.APP_KEY);
-		params.put("access_token", MainActivity.accessToken.getToken());
+		if(actionBar.getSelectedNavigationIndex() == 0) {
+			params.put("access_token", MainActivity.accessToken.getToken());
+		}
+		else {
+			params.put("access_token", ConstantS.SH_token);
+		}
 		params.put("count", "20");
 		if(HttpsUtils.getNetType(this.getSystemService(Context.CONNECTIVITY_SERVICE))==1) {
 			if(listItem.size()>0) {
@@ -325,7 +338,12 @@ public class Saloon extends FragmentActivity implements
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("url", "https://api.weibo.com/2/statuses/friends_timeline.json");
 		params.put("source", ConstantS.APP_KEY);
-		params.put("access_token", MainActivity.accessToken.getToken());
+		if(actionBar.getSelectedNavigationIndex() == 0) {
+			params.put("access_token", MainActivity.accessToken.getToken());
+		}
+		else {
+			params.put("access_token", ConstantS.SH_token);
+		}
 		params.put("count", "10");
 		params.put("max_id", max_id);
 		SendWeioboTask getAsync = new SendWeioboTask(false, max_id);
@@ -401,6 +419,15 @@ public class Saloon extends FragmentActivity implements
 			try {
 				JSONObject ori_json_obj = new JSONObject(listItem.get(position).get(from[0]).toString());
 				listItemView.name.setText(ori_json_obj.getJSONObject("user").getString("name"));
+				if(ori_json_obj.has("thumbnail_pic")) {
+					SpannableString sps = new SpannableString(" ");
+					Drawable d = getResources().getDrawable(R.drawable.imageholder);
+					d.setBounds(0, 0, 22, 22);
+					ImageSpan isp = new ImageSpan(d, ImageSpan.ALIGN_BASELINE);
+					sps.setSpan(isp, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+					listItemView.name.append(" ");
+					listItemView.name.append(sps);
+				}
 				listItemView.time.setText(ori_json_obj.getString("created_at"));
 				setWeiboContent(listItemView.content, ori_json_obj.getString("text"));
 				if(ori_json_obj.has("retweeted_status")) {
@@ -424,6 +451,7 @@ public class Saloon extends FragmentActivity implements
 				listItemView.counts.setText("评论("+ori_json_obj.getString("comments_count")+")    转发("
 						+ori_json_obj.getString("reposts_count")+")");
 				
+				convertView.setTag(R.id.tag_ori, listItem.get(position).get(from[0]).toString());
 				convertView.setTag(R.id.tag_mid, listItem.get(position).get(from[1]).toString());
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
@@ -650,21 +678,46 @@ public class Saloon extends FragmentActivity implements
 							String jsonStr;
 							if(isRefresh) {
 								if(HttpsUtils.getNetType(Saloon.this.getSystemService(Context.CONNECTIVITY_SERVICE))==0) {
-									dbHandler.updateSaloonDB("saloon", result);
-								}
-								else {
-									if(listItem.size()>50) {
+									if(actionBar.getSelectedNavigationIndex() == 0) {
 										dbHandler.updateSaloonDB("saloon", result);
 									}
 									else {
-										dbHandler.insertSaloonDB("saloon", result);
+										dbHandler.updateSaloonDB("saloon_s", result);
 									}
 								}
-								jsonStr = dbHandler.querySaloonDB("saloon");
+								else {
+									if(listItem.size()>50) {
+										if(actionBar.getSelectedNavigationIndex() == 0) {
+											dbHandler.updateSaloonDB("saloon", result);
+										}
+										else {
+											dbHandler.updateSaloonDB("saloon_s", result);
+										}
+									}
+									else {
+										if(actionBar.getSelectedNavigationIndex() == 0) {
+											dbHandler.insertSaloonDB("saloon", result);
+										}
+										else {
+											dbHandler.insertSaloonDB("saloon_s", result);
+										}
+									}
+								}
+								if(actionBar.getSelectedNavigationIndex() == 0) {
+									jsonStr = dbHandler.querySaloonDB("saloon");
+								}
+								else {
+									jsonStr = dbHandler.querySaloonDB("saloon_s");
+								}
 								initList(jsonStr);
 							}
 							else {
-								dbHandler.insertSaloonDB("saloon", result);
+								if(actionBar.getSelectedNavigationIndex() == 0) {
+									dbHandler.insertSaloonDB("saloon", result);
+								}
+								else {
+									dbHandler.insertSaloonDB("saloon_s", result);
+								}
 								fillList(result);
 							}
 						}
