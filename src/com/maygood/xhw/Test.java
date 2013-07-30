@@ -10,25 +10,29 @@ import java.net.URL;
 import com.ant.liao.GifView;
 import com.ant.liao.GifView.GifImageType;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.Menu;
+import android.widget.ImageView;
 
 public class Test extends Activity {
 	
-	private GifView gv;
+	private ImageView iv;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_test);
-		gv = (GifView) findViewById(R.id.gifview);
+		iv = (ImageView) findViewById(R.id.test_imageview);
+		Bitmap b = BitmapFactory.decodeFile(android.os.Environment.getExternalStorageDirectory()+"/test.jpg");
+		iv.setImageBitmap(b);
 		//gv.setGifImage(R.drawable.bq_0000);
-		LoadPicTask loadPicTask = new LoadPicTask();
-		loadPicTask.execute("http://ww2.sinaimg.cn/bmiddle/4d08297djw1e6u6qj7ylsg2028028t8y.gif");
+		//LoadPicTask loadPicTask = new LoadPicTask();
+		//loadPicTask.execute("http://ww2.sinaimg.cn/bmiddle/4d08297djw1e6u6qj7ylsg2028028t8y.gif");
 	}
 
 	@Override
@@ -53,7 +57,7 @@ public class Test extends Activity {
 		protected void onPostExecute(byte[] result) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(result);
-			gv.setGifImage(result);
+			//gv.setGifImage(result);
 		}
 		
 		public byte[] getImage(String imgUrl) {

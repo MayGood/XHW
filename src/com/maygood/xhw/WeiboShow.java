@@ -143,7 +143,7 @@ public class WeiboShow extends Activity {
 			//get mid
 			//mid = jsonObj.getString("mid");
 			
-			((TextView)findViewById(R.id.weibo_time)).setText(jsonObj.getString("created_at"));
+			((TextView)findViewById(R.id.weibo_time)).setText(MessageFormater.getDateString(jsonObj.getString("created_at")));
 			if(jsonObj.has("thumbnail_pic")) {
 				weiboPicture = (ImageBox) findViewById(R.id.weibo_pic);
 				weiboPicture.setImageResource(R.drawable.ic_loading);
@@ -188,7 +188,7 @@ public class WeiboShow extends Activity {
 					name = "”√ªß"+jsonObj.getJSONObject("retweeted_status").getString("uid");
 				}
 				temptext = jsonObj.getJSONObject("retweeted_status").getString("text");
-				temptext += "\n"+jsonObj.getJSONObject("retweeted_status").getString("created_at");
+				temptext += "\n"+MessageFormater.getDateString(jsonObj.getJSONObject("retweeted_status").getString("created_at"));
 				//retweetedContent.setText(temptext);
 				//dialogBox.setText(temptext);
 				Map<String, String> briefInfo = new HashMap<String, String>();
@@ -652,7 +652,7 @@ public class WeiboShow extends Activity {
 				JSONObject ori_json_obj = new JSONObject(listItem.get(position).get(from[0]).toString());
 				listItemView.user.setText(ori_json_obj.getJSONObject("user").getString("name"));
 				setWeiboContent(listItemView.text, ori_json_obj.getString("text"));
-				listItemView.time.setText(ori_json_obj.getString("created_at"));
+				listItemView.time.setText(MessageFormater.getDateString(ori_json_obj.getString("created_at")));
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -461,7 +461,7 @@ public class Saloon extends FragmentActivity implements
 						listItemView.name.append(sps);
 					}
 				}
-				listItemView.time.setText(ori_json_obj.getString("created_at"));
+				listItemView.time.setText(MessageFormater.getDateString(ori_json_obj.getString("created_at")));
 				setWeiboContent(listItemView.content, ori_json_obj.getString("text"));
 				if(ori_json_obj.has("retweeted_status")) {
 					String retweeted_name = ori_json_obj.getJSONObject("retweeted_status").getJSONObject("user").getString("name");
@@ -487,7 +487,7 @@ public class Saloon extends FragmentActivity implements
 						}
 					}
 					String retweeted_status = ori_json_obj.getJSONObject("retweeted_status").getString("text");
-					retweeted_status += "\n"+ori_json_obj.getJSONObject("retweeted_status").getString("created_at");
+					retweeted_status += "\n"+MessageFormater.getDateString(ori_json_obj.getJSONObject("retweeted_status").getString("created_at"));
 					/*
 					JSONObject urlJsonObject = new JSONObject(expandURL(context, retweeted_status));
 					int length = urlJsonObject.getJSONArray("urls").length();

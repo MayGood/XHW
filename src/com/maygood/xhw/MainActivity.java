@@ -62,8 +62,8 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setTitle("某猫的小黑屋~嘿…");
 		setContentView(R.layout.activity_main);
+		setTitle("某猫的小黑屋~嘿…");
 		
 		codeText = (TextView)findViewById(R.id.code);
 		//关于 ConstantS.XXH_id 这个参数以后还得修改！！！

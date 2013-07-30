@@ -405,7 +405,7 @@ public class ReceiveMessageActivity extends Activity {
 			
 			try {
 				JSONObject ori_json_obj = new JSONObject(listItem.get(position).get(from[0]).toString());
-				listItemView.time.setText(ori_json_obj.getString("created_at"));
+				listItemView.time.setText(MessageFormater.getDateString(ori_json_obj.getString("created_at")));
 				setWeiboContent(listItemView.content, ori_json_obj.getString("text"));
 				if(ori_json_obj.has("retweeted_status")) {
 					String retweeted_name = ori_json_obj.getJSONObject("retweeted_status").getJSONObject("user").getString("name");
@@ -431,7 +431,7 @@ public class ReceiveMessageActivity extends Activity {
 						}
 					}
 					String retweeted_status = ori_json_obj.getJSONObject("retweeted_status").getString("text");
-					retweeted_status += "\n"+ori_json_obj.getJSONObject("retweeted_status").getString("created_at");
+					retweeted_status += "\n"+MessageFormater.getDateString(ori_json_obj.getJSONObject("retweeted_status").getString("created_at"));
 					
 					listItemView.retweeted.setContent(ReceiveMessageActivity.this, retweeted_name, briefInfo, retweeted_status, false, false);
 					listItemView.retweeted.setVisibility(View.VISIBLE);

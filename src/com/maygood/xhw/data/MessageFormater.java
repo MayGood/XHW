@@ -4,7 +4,12 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.json.JSONException;
@@ -35,6 +40,18 @@ public class MessageFormater {
 			loc++;
 		}
 		return 0;
+	}
+	
+	//格式化日期
+	public static String getDateString(String d_in) {
+		//Tue Jul 30 18:02:50 +0800 2013
+		SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.ENGLISH);
+		String dateString = null;
+		ParsePosition pp = new ParsePosition(0);
+		Date d = sdf.parse(d_in, pp);
+		sdf = new SimpleDateFormat("HH:mm:ss EEE M月d日");
+		dateString = sdf.format(d);
+		return dateString;
 	}
 	
 	//url 解析
@@ -100,6 +117,11 @@ public class MessageFormater {
 			String responseValue = null;
 			try {
 				responseValue = HttpsUtils.doGet(params);
+				JSONObject jsonObject = new JSONObject(responseValue);
+				if(jsonObject.has("error")) {
+					return null;
+				}
+				return responseValue;
 			} catch (KeyManagementException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -112,8 +134,10 @@ public class MessageFormater {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			return responseValue;
 		}
 		return null;
 	}
