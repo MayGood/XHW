@@ -20,12 +20,15 @@ import com.maygood.xhw.net.HttpsUtils;
 
 public class QuickTools {
 
-	public static void sendTextWeibo(Context context, String status) {
+	public static void sendTextWeibo(Context context, String status, boolean visible) {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("url", "https://api.weibo.com/2/statuses/update.json");
 		params.put("source", ConstantS.APP_KEY);
 		params.put("access_token", MainActivity.accessToken.getToken());
 		params.put("status", status);
+		//if(!visible) {
+		//	params.put("visible", "1");
+		//}
 		SendWeiboTask textTask = new SendWeiboTask(context);
 		textTask.execute(params);
 	}

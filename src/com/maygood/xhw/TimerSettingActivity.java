@@ -76,7 +76,7 @@ public class TimerSettingActivity extends Activity {
 		case R.id.action_settings:
 			long time = (new Date()).getTime();
 			Date d = new Date(time+900000);
-			QuickTools.sendTextWeibo(this, "可以关机了 #"+(new SimpleDateFormat("大约HH点mm")).format(d)+"#");
+			QuickTools.sendTextWeibo(this, "可以关机了 #"+(new SimpleDateFormat("大约HH点mm")).format(d)+"#", false);
 			break;
 
 		default:

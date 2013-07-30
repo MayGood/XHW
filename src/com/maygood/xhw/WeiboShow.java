@@ -191,14 +191,35 @@ public class WeiboShow extends Activity {
 				temptext += "\n"+jsonObj.getJSONObject("retweeted_status").getString("created_at");
 				//retweetedContent.setText(temptext);
 				//dialogBox.setText(temptext);
+				Map<String, String> briefInfo = new HashMap<String, String>();
+				
+				if(jsonObj.getJSONObject("retweeted_status").has("urls")) {
+					String urlsJsonString = jsonObj.getJSONObject("retweeted_status").getString("urls");
+					JSONObject urlsJsonObject = new JSONObject(urlsJsonString);
+					int length = urlsJsonObject.getJSONArray("urls").length();
+					for(int index=0; index<length; index++) {
+						if(urlsJsonObject.getJSONArray("urls").getJSONObject(index).getInt("type")==1) {
+							if(briefInfo.containsKey("video"))
+								continue;
+							briefInfo.put("video", urlsJsonObject.getJSONArray("urls").getJSONObject(index).getString("url_long"));
+						}
+						else if(urlsJsonObject.getJSONArray("urls").getJSONObject(index).getInt("type")==2) {
+							if(briefInfo.containsKey("music"))
+								continue;
+							briefInfo.put("music", urlsJsonObject.getJSONArray("urls").getJSONObject(index).getString("url_long"));
+						}
+					}
+				}
+				
 				if(jsonObj.getJSONObject("retweeted_status").has("thumbnail_pic")) {
-					dialogBox.setContent(WeiboShow.this, name, temptext, true, true,
+					briefInfo.put("picture", "true");
+					dialogBox.setContent(WeiboShow.this, name, briefInfo, temptext, true, true,
 							jsonObj.getJSONObject("retweeted_status").getString("thumbnail_pic"),
 							jsonObj.getJSONObject("retweeted_status").getString("bmiddle_pic"),
 							jsonObj.getJSONObject("retweeted_status").getString("original_pic"));
 				}
 				else {
-					dialogBox.setContent(WeiboShow.this, name, temptext, true, false);
+					dialogBox.setContent(WeiboShow.this, name, briefInfo, temptext, true, false);
 				}
 				dialogBox.setVisibility(View.VISIBLE);
 				//((DialogBox) findViewById(R.id.dialogBox1)).setSize(120, 120);

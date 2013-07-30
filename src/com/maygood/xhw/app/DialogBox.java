@@ -1,5 +1,7 @@
 package com.maygood.xhw.app;
 
+import java.util.Map;
+
 import org.xml.sax.XMLReader;
 
 import com.maygood.xhw.FullscreenImageActivity;
@@ -27,6 +29,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -76,11 +79,11 @@ public class DialogBox extends TextView {
 		super.onDraw(canvas);
 	}
 	
-	public void setContent(Context context, String name, String text, boolean clickable, boolean hasPicture) {
-		setContent(context, name, text, clickable, hasPicture, null, null, null);
+	public void setContent(Context context, String name, Map briefInfo, String text, boolean clickable, boolean hasPicture) {
+		setContent(context, name, briefInfo, text, clickable, hasPicture, null, null, null);
 	}
 	
-	public void setContent(Context context, String name, String text, boolean clickable, 
+	public void setContent(Context context, String name, Map briefInfo,String text, boolean clickable, 
 			boolean hasPicture, String thumbnail_pic, String bmiddle_pic, String original_pic) {
 		int length = name.length();
 		ImageGetter imgGetter = new ImageGetter() {
@@ -99,8 +102,9 @@ public class DialogBox extends TextView {
 		if(clickable) {
 			setMovementMethod(LinkMovementMethod.getInstance());
 		}
-		if(name.charAt(length-1)=='@') {
-			append(Html.fromHtml("<font color=\'#808080\'>"+name.substring(0, length-1)+"</font>"));
+		append(Html.fromHtml("<font color=\'#808080\'>"+name+"</font>"));
+		
+		if(briefInfo.containsKey("picture")) {
 			append(" ");
 			SpannableString sps = new SpannableString(" ");
 			Drawable d = getResources().getDrawable(R.drawable.imageholder);
@@ -110,23 +114,28 @@ public class DialogBox extends TextView {
 			sps.setSpan(new ImageClickResponse(context, thumbnail_pic, bmiddle_pic, original_pic),
 					0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 			append(sps);
-			//append(Html.fromHtml("<img src=\'"+R.drawable.placeholder+"\'/>", imgGetter, null));
 		}
-		else {
-			append(Html.fromHtml("<font color=\'#808080\'>"+name+"</font>"));
-			
-			if(hasPicture) {
-				append(" ");
-				SpannableString sps = new SpannableString(" ");
-				Drawable d = getResources().getDrawable(R.drawable.imageholder);
-				d.setBounds(0, 0, 24, 24);
-				ImageSpan isp = new ImageSpan(d, ImageSpan.ALIGN_BASELINE);
-				sps.setSpan(isp, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-				sps.setSpan(new ImageClickResponse(context, thumbnail_pic, bmiddle_pic, original_pic),
-						0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-				append(sps);
-				//append(Html.fromHtml("<img src=\'"+R.drawable.placeholder+"\'/>", imgGetter, null));
-			}
+		if(briefInfo.containsKey("video")) {
+			Log.d("video", briefInfo.get("video").toString());
+			append(" ");
+			SpannableString sps = new SpannableString(" ");
+			Drawable d = getResources().getDrawable(R.drawable.videoholder);
+			d.setBounds(0, 0, 24, 24);
+			ImageSpan isp = new ImageSpan(d, ImageSpan.ALIGN_BASELINE);
+			sps.setSpan(isp, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+			sps.setSpan(new ClickResponse(context, briefInfo.get("video").toString(), 2), 0, sps.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+			append(sps);
+		}
+		if(briefInfo.containsKey("music")) {
+			Log.d("music", briefInfo.get("music").toString());
+			append(" ");
+			SpannableString sps = new SpannableString(" ");
+			Drawable d = getResources().getDrawable(R.drawable.musicholder);
+			d.setBounds(0, 0, 24, 24);
+			ImageSpan isp = new ImageSpan(d, ImageSpan.ALIGN_BASELINE);
+			sps.setSpan(isp, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+			sps.setSpan(new ClickResponse(context, briefInfo.get("music").toString(), 2), 0, sps.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+			append(sps);
 		}
 		
 		DataBaseHandler dbHandler = new DataBaseHandler(context);

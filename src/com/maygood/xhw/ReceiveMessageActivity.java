@@ -409,13 +409,31 @@ public class ReceiveMessageActivity extends Activity {
 				setWeiboContent(listItemView.content, ori_json_obj.getString("text"));
 				if(ori_json_obj.has("retweeted_status")) {
 					String retweeted_name = ori_json_obj.getJSONObject("retweeted_status").getJSONObject("user").getString("name");
+					Map<String, String> briefInfo = new HashMap<String, String>();
 					if(ori_json_obj.getJSONObject("retweeted_status").has("thumbnail_pic")) {
-						retweeted_name += "@";
+						briefInfo.put("picture", "true");
+					}
+					if(ori_json_obj.getJSONObject("retweeted_status").has("urls")) {
+						String urlsJsonString = ori_json_obj.getJSONObject("retweeted_status").getString("urls");
+						JSONObject urlsJsonObject = new JSONObject(urlsJsonString);
+						int length = urlsJsonObject.getJSONArray("urls").length();
+						for(int i=0; i<length; i++) {
+							if(urlsJsonObject.getJSONArray("urls").getJSONObject(i).getInt("type")==1) {
+								if(briefInfo.containsKey("video"))
+									continue;
+								briefInfo.put("video", urlsJsonObject.getJSONArray("urls").getJSONObject(i).getString("url_long"));
+							}
+							else if(urlsJsonObject.getJSONArray("urls").getJSONObject(i).getInt("type")==2) {
+								if(briefInfo.containsKey("music"))
+									continue;
+								briefInfo.put("music", urlsJsonObject.getJSONArray("urls").getJSONObject(i).getString("url_long"));
+							}
+						}
 					}
 					String retweeted_status = ori_json_obj.getJSONObject("retweeted_status").getString("text");
 					retweeted_status += "\n"+ori_json_obj.getJSONObject("retweeted_status").getString("created_at");
 					
-					listItemView.retweeted.setContent(ReceiveMessageActivity.this, retweeted_name, retweeted_status, false, false);
+					listItemView.retweeted.setContent(ReceiveMessageActivity.this, retweeted_name, briefInfo, retweeted_status, false, false);
 					listItemView.retweeted.setVisibility(View.VISIBLE);
 					
 					String screen_name = null;
@@ -639,6 +657,7 @@ public class ReceiveMessageActivity extends Activity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			responseValue = MessageFormater.parseStatus(responseValue);
 			return responseValue;
 		}
 		

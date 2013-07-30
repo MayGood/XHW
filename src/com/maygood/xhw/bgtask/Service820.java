@@ -84,7 +84,7 @@ class XHWTimerTask extends TimerTask {
 	public void run() {
 		// TODO Auto-generated method stub
 		Log.d("service820", "time's up!");
-		QuickTools.sendTextWeibo(context, status);
+		QuickTools.sendTextWeibo(context, status, true);
 	}
 	
 }

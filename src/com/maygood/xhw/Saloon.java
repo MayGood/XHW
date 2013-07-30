@@ -428,17 +428,81 @@ public class Saloon extends FragmentActivity implements
 					listItemView.name.append(" ");
 					listItemView.name.append(sps);
 				}
+				if(ori_json_obj.has("urls")) {
+					String urlsJsonString = ori_json_obj.getString("urls");
+					JSONObject urlsJsonObject = new JSONObject(urlsJsonString);
+					int length = urlsJsonObject.getJSONArray("urls").length();
+					boolean hasVideo = false;
+					boolean hasMusic = false;
+					for(int i=0; i<length; i++) {
+						if(urlsJsonObject.getJSONArray("urls").getJSONObject(i).getInt("type")==1) {
+							hasVideo = true;
+						}
+						else if(urlsJsonObject.getJSONArray("urls").getJSONObject(i).getInt("type")==2) {
+							hasMusic = true;
+						}
+					}
+					if(hasVideo) {
+						SpannableString sps = new SpannableString(" ");
+						Drawable d = getResources().getDrawable(R.drawable.videoholder);
+						d.setBounds(0, 0, 22, 22);
+						ImageSpan isp = new ImageSpan(d, ImageSpan.ALIGN_BASELINE);
+						sps.setSpan(isp, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+						listItemView.name.append(" ");
+						listItemView.name.append(sps);
+					}
+					if(hasMusic) {
+						SpannableString sps = new SpannableString(" ");
+						Drawable d = getResources().getDrawable(R.drawable.musicholder);
+						d.setBounds(0, 0, 22, 22);
+						ImageSpan isp = new ImageSpan(d, ImageSpan.ALIGN_BASELINE);
+						sps.setSpan(isp, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+						listItemView.name.append(" ");
+						listItemView.name.append(sps);
+					}
+				}
 				listItemView.time.setText(ori_json_obj.getString("created_at"));
 				setWeiboContent(listItemView.content, ori_json_obj.getString("text"));
 				if(ori_json_obj.has("retweeted_status")) {
 					String retweeted_name = ori_json_obj.getJSONObject("retweeted_status").getJSONObject("user").getString("name");
+					Map<String, String> briefInfo = new HashMap<String, String>();
 					if(ori_json_obj.getJSONObject("retweeted_status").has("thumbnail_pic")) {
-						retweeted_name += "@";
+						briefInfo.put("picture", "true");
+					}
+					if(ori_json_obj.getJSONObject("retweeted_status").has("urls")) {
+						String urlsJsonString = ori_json_obj.getJSONObject("retweeted_status").getString("urls");
+						JSONObject urlsJsonObject = new JSONObject(urlsJsonString);
+						int length = urlsJsonObject.getJSONArray("urls").length();
+						for(int i=0; i<length; i++) {
+							if(urlsJsonObject.getJSONArray("urls").getJSONObject(i).getInt("type")==1) {
+								if(briefInfo.containsKey("video"))
+									continue;
+								briefInfo.put("video", urlsJsonObject.getJSONArray("urls").getJSONObject(i).getString("url_long"));
+							}
+							else if(urlsJsonObject.getJSONArray("urls").getJSONObject(i).getInt("type")==2) {
+								if(briefInfo.containsKey("music"))
+									continue;
+								briefInfo.put("music", urlsJsonObject.getJSONArray("urls").getJSONObject(i).getString("url_long"));
+							}
+						}
 					}
 					String retweeted_status = ori_json_obj.getJSONObject("retweeted_status").getString("text");
 					retweeted_status += "\n"+ori_json_obj.getJSONObject("retweeted_status").getString("created_at");
-					
-					listItemView.retweeted.setContent(Saloon.this, retweeted_name, retweeted_status, false, false);
+					/*
+					JSONObject urlJsonObject = new JSONObject(expandURL(context, retweeted_status));
+					int length = urlJsonObject.getJSONArray("urls").length();
+					for(int i=0; i<length; i++) {
+						if(urlJsonObject.getJSONArray("urls").getJSONObject(i).getBoolean("result")) {
+							if(urlJsonObject.getJSONArray("urls").getJSONObject(i).getInt("type")==1) {
+								briefInfo.put("video", urlJsonObject.getJSONArray("urls").getJSONObject(i).getString("url_long"));
+							}
+							else if(urlJsonObject.getJSONArray("urls").getJSONObject(i).getInt("type")==2) {
+								briefInfo.put("music", urlJsonObject.getJSONArray("urls").getJSONObject(i).getString("url_long"));
+							}
+						}
+					}
+					*/
+					listItemView.retweeted.setContent(Saloon.this, retweeted_name, briefInfo, retweeted_status, false, false);
 					listItemView.retweeted.setVisibility(View.VISIBLE);
 					
 					convertView.setTag(R.id.tag_retweeted, "//@"+ori_json_obj.getJSONObject("user").getString("name")+":"+ori_json_obj.getString("text"));
@@ -585,6 +649,59 @@ public class Saloon extends FragmentActivity implements
 			contentView.append(tempStr);
 		}
 		
+		private String expandURL(Context context, String text) {
+			String urls_short = null;
+			
+			int start, end, length;
+			start = 0;
+			end = 0;
+			String tempStr = text;
+			length = tempStr.length();
+			while(tempStr.contains("http://")) {
+				start = tempStr.indexOf("http://");
+				end = start + 7;
+				while(end<length && isLegal(tempStr.charAt(end), true)) {
+					end++;
+				}
+				if(urls_short!=null) {
+					urls_short += "&url_short="+tempStr.substring(start, end);
+				}
+				else {
+					urls_short = tempStr.substring(start, end);
+				}
+				tempStr = tempStr.substring(end);
+				length = tempStr.length();
+			}
+			
+			if(urls_short==null) {
+				return "";
+			}
+			
+			Map<String, String> params = new HashMap<String, String>();
+			params.put("url", "https://api.weibo.com/2/short_url/expand.json");
+			params.put("source", ConstantS.APP_KEY);
+			params.put("access_token", MainActivity.accessToken.getToken());
+			params.put("url_short", urls_short);
+			
+			String responseValue = null;
+			try {
+				responseValue = HttpsUtils.doGet(params);
+			} catch (KeyManagementException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return responseValue;
+		}
+		
 		private boolean isLegal(char ch, boolean isURL) {
 			int i = ch;
 			
@@ -654,6 +771,7 @@ public class Saloon extends FragmentActivity implements
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			responseValue = MessageFormater.parseStatus(responseValue);
 			return responseValue;
 		}
 		

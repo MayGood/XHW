@@ -31,7 +31,7 @@ public interface ConstantS {
 	
 	//uid
 	public static final String XX_id = "1987328331";
-	public static final String X_id = "1720718527";
+	public static final String X_id = "3674477830";
 	public static final String XXH_id = "2905059831";
 	
 	//ÐÜµÄµ¥¼äÅ¶
@@ -43,8 +43,8 @@ public interface ConstantS {
 	public static final String S_APP_SECRET= "5d99a589ca7e771c810578efa23c99cf";
 	
 	//Token info
-	public static final String XHW_token = "";
-	public static final String XDJ_token = "";
+	public static final String XHW_token = "2.00jl1bKDI4mlLE8d26fd3f860TxB7U";
+	public static final String XDJ_token = "2.009XjfAE02Wmiy41fe478e29UK1koB";
 	public static final String SH_token = "2.00dUx8sBPKvtSE18b8ec859dLTaOCC";
 	   
 }

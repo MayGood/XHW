@@ -215,7 +215,8 @@ public class HttpsUtils {
     		if (value == null) {
     			value = "";
     		}   
-    		dataBfr.append(URLEncoder.encode(key.toString(), "UTF-8")).append('=').append(URLEncoder.encode(value.toString(), "UTF-8"));   
+    		//dataBfr.append(URLEncoder.encode(key.toString(), "UTF-8")).append('=').append(URLEncoder.encode(value.toString(), "UTF-8"));
+    		dataBfr.append(key.toString()).append('=').append(value.toString());
     	}   
     	String uri = parameters.get("url").toString()+"?"+dataBfr.toString();
         HttpGet get = new HttpGet(uri);
