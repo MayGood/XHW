@@ -135,7 +135,7 @@ public class WeiboShow extends Activity {
 					setTitle("某猫");
 				}
 				else {
-					String name = jsonObj.getJSONObject("user").getString("name");
+					String name = jsonObj.getJSONObject("user").getString("screen_name");
 					setTitle("路(luan)人(ru)-"+name);
 				}
 			}
@@ -188,7 +188,8 @@ public class WeiboShow extends Activity {
 					name = "用户"+jsonObj.getJSONObject("retweeted_status").getString("uid");
 				}
 				temptext = jsonObj.getJSONObject("retweeted_status").getString("text");
-				temptext += "\n"+MessageFormater.getDateString(jsonObj.getJSONObject("retweeted_status").getString("created_at"));
+				String retweeted_time = MessageFormater.getDateString(jsonObj.getJSONObject("retweeted_status").getString("created_at"));
+				//temptext += "\n"+MessageFormater.getDateString(jsonObj.getJSONObject("retweeted_status").getString("created_at"));
 				//retweetedContent.setText(temptext);
 				//dialogBox.setText(temptext);
 				Map<String, String> briefInfo = new HashMap<String, String>();
@@ -213,13 +214,13 @@ public class WeiboShow extends Activity {
 				
 				if(jsonObj.getJSONObject("retweeted_status").has("thumbnail_pic")) {
 					briefInfo.put("picture", "true");
-					dialogBox.setContent(WeiboShow.this, name, briefInfo, temptext, true, true,
+					dialogBox.setContent(WeiboShow.this, name, briefInfo, temptext, retweeted_time, true, true,
 							jsonObj.getJSONObject("retweeted_status").getString("thumbnail_pic"),
 							jsonObj.getJSONObject("retweeted_status").getString("bmiddle_pic"),
 							jsonObj.getJSONObject("retweeted_status").getString("original_pic"));
 				}
 				else {
-					dialogBox.setContent(WeiboShow.this, name, briefInfo, temptext, true, false);
+					dialogBox.setContent(WeiboShow.this, name, briefInfo, temptext, retweeted_time, true, false);
 				}
 				dialogBox.setVisibility(View.VISIBLE);
 				//((DialogBox) findViewById(R.id.dialogBox1)).setSize(120, 120);
@@ -307,7 +308,7 @@ public class WeiboShow extends Activity {
 				String uname = null;
 				try {
 					JSONObject jsonObj = new JSONObject(info.targetView.getTag(R.id.tag_ori).toString());
-					uname = jsonObj.getJSONObject("user").getString("name");
+					uname = jsonObj.getJSONObject("user").getString("screen_name");
 					cid = jsonObj.getString("id");
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
@@ -650,7 +651,7 @@ public class WeiboShow extends Activity {
 			
 			try {
 				JSONObject ori_json_obj = new JSONObject(listItem.get(position).get(from[0]).toString());
-				listItemView.user.setText(ori_json_obj.getJSONObject("user").getString("name"));
+				listItemView.user.setText(ori_json_obj.getJSONObject("user").getString("screen_name"));
 				setWeiboContent(listItemView.text, ori_json_obj.getString("text"));
 				listItemView.time.setText(MessageFormater.getDateString(ori_json_obj.getString("created_at")));
 			} catch (JSONException e) {
@@ -976,6 +977,11 @@ public class WeiboShow extends Activity {
 			    Uri content_url = Uri.parse(text.toString());
 			    i.setData(content_url);
 			    startActivity(i);
+			}
+			else if(mode == 0) {
+				Intent i_profile = new Intent(WeiboShow.this, Profile.class);
+				i_profile.putExtra("screen_name", text.toString().substring(1));
+				startActivity(i_profile);
 			}
 			else {
 				Toast.makeText(context, text, Toast.LENGTH_SHORT).show();

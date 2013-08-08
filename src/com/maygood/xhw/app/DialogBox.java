@@ -5,6 +5,7 @@ import java.util.Map;
 import org.xml.sax.XMLReader;
 
 import com.maygood.xhw.FullscreenImageActivity;
+import com.maygood.xhw.Profile;
 import com.maygood.xhw.R;
 import com.maygood.xhw.WeiboShow;
 import com.maygood.xhw.data.DataBaseHandler;
@@ -79,11 +80,11 @@ public class DialogBox extends TextView {
 		super.onDraw(canvas);
 	}
 	
-	public void setContent(Context context, String name, Map briefInfo, String text, boolean clickable, boolean hasPicture) {
-		setContent(context, name, briefInfo, text, clickable, hasPicture, null, null, null);
+	public void setContent(Context context, String name, Map briefInfo, String text, String created_time, boolean clickable, boolean hasPicture) {
+		setContent(context, name, briefInfo, text , created_time, clickable, hasPicture, null, null, null);
 	}
 	
-	public void setContent(Context context, String name, Map briefInfo,String text, boolean clickable, 
+	public void setContent(Context context, String name, Map briefInfo,String text, String created_time, boolean clickable, 
 			boolean hasPicture, String thumbnail_pic, String bmiddle_pic, String original_pic) {
 		int length = name.length();
 		ImageGetter imgGetter = new ImageGetter() {
@@ -102,7 +103,15 @@ public class DialogBox extends TextView {
 		if(clickable) {
 			setMovementMethod(LinkMovementMethod.getInstance());
 		}
-		append(Html.fromHtml("<font color=\'#808080\'>"+name+"</font>"));
+		if(name.equals("Ä³Ã¨ÐìÐ¡ºÚ")) {
+			append(Html.fromHtml("<font color=\'#606060\'>Ä³Ã¨</font>"));
+		}
+		else if(name.equals("°¬Ã×Î÷Ë¹ÌØ")) {
+			append(Html.fromHtml("<font color=\'#606060\'>Ä³ÐÜ</font>"));
+		}
+		else {
+			append(Html.fromHtml("<font color=\'#606060\'>"+name+"</font>"));
+		}
 		
 		if(briefInfo.containsKey("picture")) {
 			append(" ");
@@ -187,6 +196,9 @@ public class DialogBox extends TextView {
 			//sps.setSpan(new ClickResponse(context, sps), 0, sps.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 			//append(sps);
 		}
+		
+		append("\n");
+		append(Html.fromHtml("<font color=\'#808080\'>"+created_time+"</font>"));
 		
 	}
 	
@@ -330,6 +342,11 @@ public class DialogBox extends TextView {
 			    Uri content_url = Uri.parse(text.toString());
 			    i.setData(content_url);
 			    context.startActivity(i);
+			}
+			else if(mode == 0) {
+				Intent i_profile = new Intent(context, Profile.class);
+				i_profile.putExtra("screen_name", text.toString().substring(1));
+				context.startActivity(i_profile);
 			}
 			else {
 				Toast.makeText(context, text, Toast.LENGTH_SHORT).show();

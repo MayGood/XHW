@@ -64,6 +64,10 @@
             android:name="com.maygood.xhw.TimerSettingActivity"
             android:label="@string/title_activity_timer_setting" >
         </activity>
+        <activity
+            android:name="com.maygood.xhw.Profile"
+            android:label="@string/title_activity_profile" >
+        </activity>
     </application>
 
 </manifest>

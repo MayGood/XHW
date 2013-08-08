@@ -110,7 +110,7 @@ public class Saloon extends FragmentActivity implements
 				if(pos == parent.getCount()-1) {
 					String maxId = "0";
 					if(pos>0) {
-						long _id = Long.parseLong(view.getTag(R.id.tag_mid).toString());
+						long _id = Long.parseLong((((HashMap<String, Object>)parent.getItemAtPosition(pos-1)).get("mid").toString()));
 						maxId = Long.toString(_id-1);
 					}
 					getWeiboMessage(maxId);
@@ -418,7 +418,7 @@ public class Saloon extends FragmentActivity implements
 			
 			try {
 				JSONObject ori_json_obj = new JSONObject(listItem.get(position).get(from[0]).toString());
-				listItemView.name.setText(ori_json_obj.getJSONObject("user").getString("name"));
+				listItemView.name.setText(ori_json_obj.getJSONObject("user").getString("screen_name"));
 				if(ori_json_obj.has("thumbnail_pic")) {
 					SpannableString sps = new SpannableString(" ");
 					Drawable d = getResources().getDrawable(R.drawable.imageholder);
@@ -464,7 +464,8 @@ public class Saloon extends FragmentActivity implements
 				listItemView.time.setText(MessageFormater.getDateString(ori_json_obj.getString("created_at")));
 				setWeiboContent(listItemView.content, ori_json_obj.getString("text"));
 				if(ori_json_obj.has("retweeted_status")) {
-					String retweeted_name = ori_json_obj.getJSONObject("retweeted_status").getJSONObject("user").getString("name");
+					String retweeted_name = ori_json_obj.getJSONObject("retweeted_status").getJSONObject("user").getString("screen_name");
+					String retweeted_time = MessageFormater.getDateString(ori_json_obj.getJSONObject("retweeted_status").getString("created_at"));
 					Map<String, String> briefInfo = new HashMap<String, String>();
 					if(ori_json_obj.getJSONObject("retweeted_status").has("thumbnail_pic")) {
 						briefInfo.put("picture", "true");
@@ -487,7 +488,7 @@ public class Saloon extends FragmentActivity implements
 						}
 					}
 					String retweeted_status = ori_json_obj.getJSONObject("retweeted_status").getString("text");
-					retweeted_status += "\n"+MessageFormater.getDateString(ori_json_obj.getJSONObject("retweeted_status").getString("created_at"));
+					//retweeted_status += "\n"+MessageFormater.getDateString(ori_json_obj.getJSONObject("retweeted_status").getString("created_at"));
 					/*
 					JSONObject urlJsonObject = new JSONObject(expandURL(context, retweeted_status));
 					int length = urlJsonObject.getJSONArray("urls").length();
@@ -502,10 +503,10 @@ public class Saloon extends FragmentActivity implements
 						}
 					}
 					*/
-					listItemView.retweeted.setContent(Saloon.this, retweeted_name, briefInfo, retweeted_status, false, false);
+					listItemView.retweeted.setContent(Saloon.this, retweeted_name, briefInfo, retweeted_status, retweeted_time, false, false);
 					listItemView.retweeted.setVisibility(View.VISIBLE);
 					
-					convertView.setTag(R.id.tag_retweeted, "//@"+ori_json_obj.getJSONObject("user").getString("name")+":"+ori_json_obj.getString("text"));
+					convertView.setTag(R.id.tag_retweeted, "//@"+ori_json_obj.getJSONObject("user").getString("screen_name")+":"+ori_json_obj.getString("text"));
 				}
 				else {
 					listItemView.retweeted.setVisibility(View.GONE);

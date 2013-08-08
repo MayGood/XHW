@@ -6,7 +6,7 @@ public interface ConstantS {
 	public static final String APP_KEY="3838458386";
 	
 	//替换为开发者REDIRECT_URL
-	public static final String REDIRECT_URL = "http://127.0.0.1";
+	public static final String REDIRECT_URL = "http://xxhx.sinaapp.com/response";
 	    
 	//新支持scope 支持传入多个scope权限，用逗号分隔
 	//暂时只用基本接口

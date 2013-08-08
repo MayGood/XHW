@@ -408,7 +408,8 @@ public class ReceiveMessageActivity extends Activity {
 				listItemView.time.setText(MessageFormater.getDateString(ori_json_obj.getString("created_at")));
 				setWeiboContent(listItemView.content, ori_json_obj.getString("text"));
 				if(ori_json_obj.has("retweeted_status")) {
-					String retweeted_name = ori_json_obj.getJSONObject("retweeted_status").getJSONObject("user").getString("name");
+					String retweeted_name = ori_json_obj.getJSONObject("retweeted_status").getJSONObject("user").getString("screen_name");
+					String retweeted_time = MessageFormater.getDateString(ori_json_obj.getJSONObject("retweeted_status").getString("created_at"));
 					Map<String, String> briefInfo = new HashMap<String, String>();
 					if(ori_json_obj.getJSONObject("retweeted_status").has("thumbnail_pic")) {
 						briefInfo.put("picture", "true");
@@ -431,9 +432,9 @@ public class ReceiveMessageActivity extends Activity {
 						}
 					}
 					String retweeted_status = ori_json_obj.getJSONObject("retweeted_status").getString("text");
-					retweeted_status += "\n"+MessageFormater.getDateString(ori_json_obj.getJSONObject("retweeted_status").getString("created_at"));
+					//retweeted_status += "\n"+MessageFormater.getDateString(ori_json_obj.getJSONObject("retweeted_status").getString("created_at"));
 					
-					listItemView.retweeted.setContent(ReceiveMessageActivity.this, retweeted_name, briefInfo, retweeted_status, false, false);
+					listItemView.retweeted.setContent(ReceiveMessageActivity.this, retweeted_name, briefInfo, retweeted_status, retweeted_time, false, false);
 					listItemView.retweeted.setVisibility(View.VISIBLE);
 					
 					String screen_name = null;
