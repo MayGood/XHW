@@ -1,4 +1,4 @@
 .settings
-bin
-gen
-ConstantS.java
+/bin/
+/gen/
+/src/com/maygood/xhw/data/ConstantS.java
